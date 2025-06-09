@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {seEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import MenuBar from '../components/MenuBar';
@@ -10,6 +10,11 @@ function MissingResult() {
   const [responses, setResponses] = useState({});
   const [showFailed, setShowFailed] = useState(true);
   const navigate = useNavigate();
+  useEffect(() => {
+    fetch('http://localhost:5002/api/clip-result')
+      .then((res) => res.json())
+      .then((data) => setResult(data));
+  }, []);
 
   const handleYes = (id) => {
     setResponses({ ...responses, [id]: 'yes' });
