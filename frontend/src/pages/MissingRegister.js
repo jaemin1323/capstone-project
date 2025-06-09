@@ -66,21 +66,29 @@ function MissingRegister() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const missingFields = requiredFields.filter((field) => {
-      if (field === 'images') return form.images.length === 0;
-      if (field === 'colors') return !form.colors || form.colors.length === 0;
-      return !form[field];
-    });
+    const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    if (missingFields.length > 0) {
-      alert('필수 항목을 모두 입력해주세요!');
-      return;
+    const formData = new FormData();
+    formData.append('image', form.images[0]);
+    formData.append('breed', form.breed);
+    formData.append('colors', JSON.stringify(form.colors));
+    formData.append('gender', form.gender);
+    formData.append('neutered', form.neutered);
+
+    try {
+      const response = await fetch('http://localhost:5002/api/clip-search', {
+        method: 'POST',
+        body: formData,
+      });
+      const result = await response.json();
+     
+      navigate('/missing-result', { state: { clipResult: result } });
+    } catch (err) {
+      alert('CLIP 서버와 통신 실패');
     }
-
-    console.log('Form submitted:', form);
-    alert('등록이 완료되었습니다!');
-    navigate('/');
   };
+    
 
   return (
     <div className="register-container">
